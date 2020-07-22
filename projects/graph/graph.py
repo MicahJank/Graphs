@@ -103,9 +103,9 @@ class Graph:
         # work toward base case
         # call itself
 
-        # the base case is when the current node has no more neighbors to check
+        # the base case is when the current node is in the visited set
         # work toward the base case by getting the current nodes neighbors and performing the dft_recursive function
-        # on all of them
+        # on all of them while also passing it the updated visited list
         current_node = starting_vertex
         neighbors = self.get_neighbors(current_node)
 
@@ -128,7 +128,37 @@ class Graph:
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        pass  # TODO
+          # make a queue
+        q = Queue()
+        # enqueue our start node
+        q.enqueue(starting_vertex)
+        
+        # make a set to track visited nodes
+        visited = set()
+        path = []
+        shortest_path = []
+        
+        current_node = starting_vertex
+        # while queue still has things in it
+        while current_node != destination_vertex:
+        ## dq from front of the line, this is our current node
+        ## check if we've visited, if not:
+            if current_node not in visited:
+        ### mark it as visited
+                visited.add(current_node)
+                path.append(current_node)
+        ### get its neighbors
+                neighbors = self.get_neighbors(current_node)
+        ### iterate over neighbors,
+                for neighbor in neighbors:
+        #### add to queue
+                    q.enqueue(neighbor)
+
+                current_node = q.dequeue()
+
+        for i in reversed(path):
+
+
     
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -214,6 +244,8 @@ if __name__ == '__main__':
     Valid BFS path:
         [1, 2, 4, 6]
     '''
+    print("### BFS ###")
+    print("Should return [1, 2, 4, 6]")
     print(graph.bfs(1, 6))
 
 
