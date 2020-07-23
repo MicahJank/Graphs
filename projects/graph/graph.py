@@ -163,35 +163,37 @@ class Graph:
         """
          # make a stack
         s = Stack()
-        # push our starting node onto the stack
-        s.push(starting_vertex)
+        # create a path to store the nodes to the current vertext
+        path = [starting_vertex]
+        # push the path onto the stack
+        s.push(path)
         # make a set to track the nodes we've visited
         visited = set()
-        path = []
         
-        parent = starting_vertex
         # as long as our stack isn't empty
         while s.size() > 0:
-        ## pop off the top, this is our current node
-            current_node = s.pop()
+        ## pop off the top of the stack - this is our list of nodes i.e our path
+            current_path = s.pop()
+            # current node can be grabbed off the last item in the list
+            current_node = current_path[-1]
             
         ## check if we have visited this before, and if not:
             if current_node not in visited:
         ### mark it as visited
                 visited.add(current_node)
-                path.append(current_node)
             
+                # whenever we find the destination node we can just return our current path at that point
                 if current_node == destination_vertex:
-                    print(path)
-                    break
+                    return current_path
 
         ### get its neighbors
                 neighbors = self.get_neighbors(current_node)
         ### iterate over neighbors
                 for neighbor in neighbors:
-                    if neighbor not in visited:
-                    #### and add them to our stack
-                        s.push(neighbor)
+                    # we need to create the next path that will be added to our stack
+                    next_path = current_path.copy()
+                    next_path.append(neighbor)
+                    s.push(next_path)
     
     def dfs_recursive(self, starting_vertex, destination_vertex, visited=set(), path=[]):
         """
@@ -203,22 +205,21 @@ class Graph:
         """
         current_node = starting_vertex
         neighbors = self.get_neighbors(current_node)
+        path.append(current_node)
 
         if current_node == destination_vertex:
-            path.append(current_node)
             visited.add(current_node)
             return path
         else:
             if current_node not in visited:
-                path.append(current_node)
                 visited.add(current_node)
 
                 for neighbor in neighbors:
-                    path = self.dft_recursive(neighbor, destination_vertex, visited, path)
+                    path = self.dfs_recursive(neighbor, destination_vertex, visited, path)
                     if destination_vertex in visited:
                         return path
                     else:
-                        path.pop(neighbor)
+                        path.pop()
 
         return path
         
