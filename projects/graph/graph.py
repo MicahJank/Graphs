@@ -203,19 +203,24 @@ class Graph:
         """
         current_node = starting_vertex
         neighbors = self.get_neighbors(current_node)
+
         if current_node == destination_vertex:
-            print("BOOM")
-            return current_node
+            path.append(current_node)
+            visited.add(current_node)
+            return path
         else:
             if current_node not in visited:
-                visited.add(current_node)
-                # path.append(current_node)
-
                 path.append(current_node)
-                for neighbor in neighbors:
-                    self.dfs_recursive(neighbor, destination_vertex, visited, path)
+                visited.add(current_node)
 
-        print(path)
+                for neighbor in neighbors:
+                    path = self.dft_recursive(neighbor, destination_vertex, visited, path)
+                    if destination_vertex in visited:
+                        return path
+                    else:
+                        path.pop(neighbor)
+
+        return path
         
         
 
