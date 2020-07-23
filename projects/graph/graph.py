@@ -128,29 +128,30 @@ class Graph:
         starting_vertex to destination_vertex in
         breath-first order.
         """
-         # make a queue
+        # instead of a queue of verticies, make it a queue of paths TO a specific vertex
         q = Queue()
-        # enqueue our start node
-        q.enqueue(starting_vertex)
-        
-        # make a set to track visited nodes
+        path = [starting_vertex]
+        q.enqueue(path)
         visited = set()
         
-        # while queue still has things in it
         while q.size() > 0:
-        ## dq from front of the line, this is our current node
-            current_node = q.dequeue()
-        ## check if we've visited, if not:
+            current_path = q.dequeue()
+            # still need the current node to check if its been visited or not - can get it by grabbing the last item out of the current path
+            current_node = current_path[-1]
+
             if current_node not in visited:
-        ### mark it as visited
+                # since i am building up a path as a traverse the graph - once i find the destination vertex - getting the path is as simple as returning what ive built up so far
+                if current_node == destination_vertex:
+                    return current_path
+
                 visited.add(current_node)
-                print(current_node)
-        ### get its neighbors
                 neighbors = self.get_neighbors(current_node)
-        ### iterate over neighbors,
+
+                # this is what builds up the path each time we go to another vertex - i copy the old path and then append the new neighbor to it. Then i can enqueue the new path
                 for neighbor in neighbors:
-        #### add to queue
-                    q.enqueue(neighbor)
+                    next_path = current_path.copy()
+                    next_path.append(neighbor)
+                    q.enqueue(next_path)
 
 
     
@@ -192,7 +193,7 @@ class Graph:
                     #### and add them to our stack
                         s.push(neighbor)
     
-    def dfs_recursive(self, starting_vertex, destination_vertex):
+    def dfs_recursive(self, starting_vertex, destination_vertex, visited=set(), path=[]):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -200,7 +201,23 @@ class Graph:
         
         This should be done using recursion.
         """
-        pass  # TODO
+        current_node = starting_vertex
+        neighbors = self.get_neighbors(current_node)
+        if current_node == destination_vertex:
+            print("BOOM")
+            return current_node
+        else:
+            if current_node not in visited:
+                visited.add(current_node)
+                # path.append(current_node)
+
+                path.append(current_node)
+                for neighbor in neighbors:
+                    self.dfs_recursive(neighbor, destination_vertex, visited, path)
+
+        print(path)
+        
+        
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
