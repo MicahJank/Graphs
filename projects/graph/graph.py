@@ -92,7 +92,7 @@ class Graph:
         #### and add them to our stack
                     s.push(neighbor)
                     
-    def dft_recursive(self, starting_vertex, visited=set()):
+    def dft_recursive(self, starting_vertex, visited=None):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
@@ -106,20 +106,18 @@ class Graph:
         # the base case is when the current node is in the visited set
         # work toward the base case by getting the current nodes neighbors and performing the dft_recursive function
         # on all of them while also passing it the updated visited list
+        if visited == None:
+            visited = set()
+
         current_node = starting_vertex
         neighbors = self.get_neighbors(current_node)
 
-
-        if current_node in visited:
-            # print(starting_vertex)
-            return
-        else:
+        if current_node not in visited:
             print(current_node)
             visited.add(current_node)
 
             for neighbor in neighbors:
                 self.dft_recursive(neighbor, visited)
-
         return
     
     def bfs(self, starting_vertex, destination_vertex):
@@ -195,7 +193,7 @@ class Graph:
                     next_path.append(neighbor)
                     s.push(next_path)
     
-    def dfs_recursive(self, starting_vertex, destination_vertex, visited=set(), path=[]):
+    def dfs_recursive(self, starting_vertex, destination_vertex, visited=None, path=[]):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -203,6 +201,10 @@ class Graph:
         
         This should be done using recursion.
         """
+
+        if visited == None:
+            visited = set()
+
         current_node = starting_vertex
         neighbors = self.get_neighbors(current_node)
         path.append(current_node)
