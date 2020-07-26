@@ -78,6 +78,8 @@ def dfs_recursive(node, visited=None):
     print(current_node)
     neighbors = get_neighbors(adjaceny_list, current_node)
 
+    # if neighbors is none that means we have traversed to the farthest node possible since
+    # neighbors will only ever be in a deeper level
     if neighbors is None:
         return 
 
