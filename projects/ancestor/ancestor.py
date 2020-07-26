@@ -44,15 +44,11 @@ A parent may have any number of children.
 # - get neighbors can also take in the adjacency list and use it to find the neighbors
 #  { 1: {5, 4, 3 }, 2: { 1, 5 } } -- eg
 
-# will return the target nodes parent/s node/s
-def get_neighbors(adjaceny_list, target_node):
-    return adjaceny_list[target_node]
+adjaceny_list = {}
 
-def earliest_ancestor(ancestors, starting_node):
-    # take the ancestors and put them in an adjacency list where the connected neighbors are each nodes parent/s
-    # creates the adjacency list that will create a list of the nodes and all their parents for quick access - can use this to find neighbors quick
-    adjaceny_list = {}
-    for pair in ancestors:
+# create adjacency list
+def create_adjacency_list(nodes):
+    for pair in nodes:
         parent = pair[0]
         child = pair[1]
 
@@ -62,7 +58,51 @@ def earliest_ancestor(ancestors, starting_node):
         else:
             adjaceny_list[child].add(parent)
 
-    # create stack
-    stack = Stack()
+
+# will return the target nodes parent/s node/s
+def get_neighbors(adjaceny_list, target_node):
+    if target_node in adjaceny_list:
+        return adjaceny_list[target_node]
+    else:
+        return
+
+
+
+def dfs_recursive(node, visited=None):
+
+    if visited == None:
+        visited = set()
+        
+    
+    current_node = node
+    print(current_node)
+    neighbors = get_neighbors(adjaceny_list, current_node)
+
+    if neighbors is None:
+        return 
+
+    if current_node not in visited:
+        # print(current_node)
+        visited.add(current_node)
+
+        for neighbor in neighbors:
+            dfs_recursive(neighbor, visited)
+    
+    return
+
+def earliest_ancestor(ancestors, starting_node):
+    # take the ancestors and put them in an adjacency list where the connected neighbors are each nodes parent/s
+    # creates the adjacency list that will create a list of the nodes and all their parents for quick access - can use this to find neighbors quick
+    create_adjacency_list(ancestors)
+    
+   
+    dfs_recursive(starting_node)
+
 
     print(adjaceny_list)
+
+
+
+test_ancestors = [(1, 3), (2, 3), (3, 6), (5, 6), (5, 7), (4, 5), (4, 8), (8, 9), (11, 8), (10, 1)]
+
+earliest_ancestor(test_ancestors, 6)
