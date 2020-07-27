@@ -68,43 +68,119 @@ def get_neighbors(adjaceny_list, target_node):
 
 
 
-def dfs_recursive(node, visited=None):
+# def dfs_recursive(node, visited=None, count=0, farthest_reach=0, possibilities=[]):
 
-    if visited == None:
-        visited = set()
+#     if visited == None:
+#         visited = set()
+
+#     # current_count = count + 1
+#     current_node = node
+
+#     # print(current_node)
+#     neighbors = get_neighbors(adjaceny_list, current_node)
+
+#     # if neighbors is none that means we have traversed to the farthest node possible since
+#     # neighbors will only ever be in a deeper level
+#     if neighbors is None:
+#         # print("maximum node", current_node)
+#         # print("count", count)
+#         # print(current_count, count)
+#         # print("farthest", farthest_reach)
+#         if count >= farthest_reach:
+#             farthest_reach = count
+#             possibilities.append((current_node, farthest_reach))
+#         return possibilities
+
+#     if current_node not in visited:
+#         # print(current_node)
+#         visited.add(current_node)
+
+#         for neighbor in neighbors:
+#             possibilities = dfs_recursive(neighbor, visited, count + 1, farthest_reach, possibilities)
+#             farthest_reach = possibilities[0][1]
+
+#     print(possibilities)
+#     possibilities.sort()
+#     return possibilities
+
+def dfs_iterative(starting_node):
+    # make a stack
+    s = Stack()
+    # create a path to store the nodes to the current vertext
+    path = [starting_node]
+    # push the path onto the stack
+    s.push(path)
+    # make a set to track the nodes we've visited
+    visited = set()
+
+    possible_paths = []
         
-    
-    current_node = node
-    print(current_node)
-    neighbors = get_neighbors(adjaceny_list, current_node)
+    # as long as our stack isn't empty
+    while s.size() > 0:
+    ## pop off the top of the stack - this is our list of nodes i.e our path
+        current_path = s.pop()
+        # current node can be grabbed off the last item in the list
+        current_node = current_path[-1]
+            
+    ## check if we have visited this before, and if not:
+        if current_node not in visited:
+    ### mark it as visited
+            visited.add(current_node)
+            
+            # whenever we find the destination node we can just return our current path at that point
+            # if current_node == destination_vertex:
+            #     return current_path
 
-    # if neighbors is none that means we have traversed to the farthest node possible since
-    # neighbors will only ever be in a deeper level
-    if neighbors is None:
-        return 
+            neighbors = get_neighbors(adjaceny_list, current_node)
+            if neighbors is not None:
+                for neighbor in neighbors:
+                    # we need to create the next path that will be added to our stack
+                    next_path = current_path.copy()
+                    next_path.append(neighbor)
+                    s.push(next_path)
+            # if neighbors is None its because we have reached the end of a path - at this point i can add the path to the possible paths array
+            else:
+                # the initial path should be added regardless and i know that its the initial path when the len of the possible paths array is 0
+                if len(possible_paths) == 0:
+                    possible_paths.append(current_path)
+                # after the inital path has been added though - i need to check subsequent paths with the length of the path in possible paths
+                # if its greater then that means i want to override whatever is the paths are that are in possible paths
+                elif len(current_path) > len(possible_paths[0]):
+                    possible_paths.clear()
+                    possible_paths.append(current_path)
+                # also whenever i get a current path that has the same number of layers as what is in the possible paths - then i should simply add them to the possible paths
+                elif len(current_path) == len(possible_paths[0]):
+                    possible_paths.append(current_path)
 
-    if current_node not in visited:
-        # print(current_node)
-        visited.add(current_node)
-
-        for neighbor in neighbors:
-            dfs_recursive(neighbor, visited)
-    
-    return
+    print(possible_paths)
+    return possible_paths
 
 def earliest_ancestor(ancestors, starting_node):
     # take the ancestors and put them in an adjacency list where the connected neighbors are each nodes parent/s
     # creates the adjacency list that will create a list of the nodes and all their parents for quick access - can use this to find neighbors quick
     create_adjacency_list(ancestors)
-    
-   
-    dfs_recursive(starting_node)
+
+    if get_neighbors(adjaceny_list, starting_node) is None:
+        return -1
+
+    paths = dfs_iterative(starting_node)
+
+    # paths can either have 1 path in which case i will just need to get the last item in that path to get the earliest ancestory
+    # if paths has multiple paths in it though - i will need to check and compare the last items in the list to see which has the lower id number and return that one
+
+    if len(paths) > 1:
+        lowest_id = paths[0][-1]
+        for path in paths:
+            if path[-1] < lowest_id:
+                lowest_id = path[-1]
+        print(lowest_id)
+        return lowest_id
+
+    print("final answer", paths[0][-1])
+    return paths[0][-1]
 
 
-    print(adjaceny_list)
 
+# test_ancestors = [(1, 3), (2, 3), (3, 6), (5, 6), (5, 7), (4, 5), (4, 8), (8, 9), (11, 8), (10, 1)]
 
-
-test_ancestors = [(1, 3), (2, 3), (3, 6), (5, 6), (5, 7), (4, 5), (4, 8), (8, 9), (11, 8), (10, 1)]
-
-earliest_ancestor(test_ancestors, 6)
+# earliest_ancestor(test_ancestors, 9)
