@@ -201,30 +201,54 @@ class Graph:
         
         This should be done using recursion.
         """
+    # my weird way of doing it
+        # if visited == None:
+        #     visited = set()
 
+        # current_node = starting_vertex
+        # neighbors = self.get_neighbors(current_node)
+        # path.append(current_node)
+
+        # if current_node == destination_vertex:
+        #     visited.add(current_node)
+        #     return path
+        # else:
+        #     if current_node not in visited:
+        #         visited.add(current_node)
+
+        #         for neighbor in neighbors:
+        #             path = self.dfs_recursive(neighbor, destination_vertex, visited, path)
+        #             if destination_vertex in visited:
+        #                 return path
+        #             else:
+        #                 path.pop()
+
+        # return path
+        
+        
         if visited == None:
             visited = set()
 
         current_node = starting_vertex
-        neighbors = self.get_neighbors(current_node)
-        path.append(current_node)
+
+        if current_node not in visited:
+            visited.add(current_node)
+
+        if len(path) == 0:
+            path.append(current_node)
 
         if current_node == destination_vertex:
-            visited.add(current_node)
             return path
-        else:
-            if current_node not in visited:
-                visited.add(current_node)
 
-                for neighbor in neighbors:
-                    path = self.dfs_recursive(neighbor, destination_vertex, visited, path)
-                    if destination_vertex in visited:
-                        return path
-                    else:
-                        path.pop()
+        neighbors = self.get_neighbors(current_node)
+            
+        for neighbor in neighbors:
+            if neighbor not in visited:
+                result = self.dfs_recursive(neighbor, destination_vertex, visited, path + [neighbor])
+                if result is not None:
+                    return result
 
-        return path
-        
+        return None
         
 
 if __name__ == '__main__':
