@@ -66,43 +66,6 @@ def get_neighbors(adjaceny_list, target_node):
     else:
         return
 
-
-
-# def dfs_recursive(node, visited=None, count=0, farthest_reach=0, possibilities=[]):
-
-#     if visited == None:
-#         visited = set()
-
-#     # current_count = count + 1
-#     current_node = node
-
-#     # print(current_node)
-#     neighbors = get_neighbors(adjaceny_list, current_node)
-
-#     # if neighbors is none that means we have traversed to the farthest node possible since
-#     # neighbors will only ever be in a deeper level
-#     if neighbors is None:
-#         # print("maximum node", current_node)
-#         # print("count", count)
-#         # print(current_count, count)
-#         # print("farthest", farthest_reach)
-#         if count >= farthest_reach:
-#             farthest_reach = count
-#             possibilities.append((current_node, farthest_reach))
-#         return possibilities
-
-#     if current_node not in visited:
-#         # print(current_node)
-#         visited.add(current_node)
-
-#         for neighbor in neighbors:
-#             possibilities = dfs_recursive(neighbor, visited, count + 1, farthest_reach, possibilities)
-#             farthest_reach = possibilities[0][1]
-
-#     print(possibilities)
-#     possibilities.sort()
-#     return possibilities
-
 def dfs_iterative(starting_node):
     # make a stack
     s = Stack()
