@@ -67,13 +67,10 @@ def get_neighbors(adjaceny_list, target_node):
         return
 
 def dfs_iterative(starting_node):
-    # make a stack
     s = Stack()
-    # create a path to store the nodes to the current vertext
     path = [starting_node]
-    # push the path onto the stack
     s.push(path)
-    # make a set to track the nodes we've visited
+
     visited = set()
 
     possible_paths = []
