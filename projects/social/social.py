@@ -108,7 +108,7 @@ class SocialGraph:
             return
 
         visited = {}  # Note that this is a dictionary, not a set
-        # since i am trying to find a shortest path i will use a BFS
+        # since i am trying to find a shortest path i will use a BFT
         # visited is a dict that will have the visited user as the key
         # what would the value of the visited user be? - the friends of that user?
 

@@ -87,10 +87,7 @@ def dfs_iterative(starting_node):
     ### mark it as visited
             visited.add(current_node)
             
-            # whenever we find the destination node we can just return our current path at that point
-            # if current_node == destination_vertex:
-            #     return current_path
-
+            # get the neigbors/parents of the current node
             neighbors = get_neighbors(adjaceny_list, current_node)
             if neighbors is not None:
                 for neighbor in neighbors:
