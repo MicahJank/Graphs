@@ -1,0 +1,11 @@
+1. Describe in graphs terminology
+- What are our nodes?
+-- The rooms are the nodes
+- When do we have an edge to another node? What connects two nodes/rooms together
+-- the exits/rooms to the n,s,e,w of the current room are the edges - they are what connect rooms
+
+2. Build your graph or define getNeighbors()
+ player.current_room.get_exits() is already defined for me which i can use to get the neighbors
+
+3. Choose your algorithm
+  DFT
