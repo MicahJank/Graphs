@@ -13,10 +13,10 @@ world = World()
 
 # You may uncomment the smaller graphs for development and testing purposes.
 # map_file = "maps/test_line.txt"
-map_file = "maps/test_cross.txt"
+# map_file = "maps/test_cross.txt"
 # map_file = "maps/test_loop.txt"
 # map_file = "maps/test_loop_fork.txt"
-# map_file = "maps/main_maze.txt"
+map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
 room_graph=literal_eval(open(map_file, "r").read())
@@ -42,9 +42,9 @@ class Graph:
     def add_exit(self, current_room, exit):
         self.rooms[current_room][exit] = '?'
 
-    # finds the exits for whatever room id is entered
+    # finds the exits directions for whatever room id is entered
     def get_room_exits(self, room_id):
-        return self.rooms[room_id]
+        return list(self.rooms[room_id])
 
     # useful for when i need to fill in the graph with the previous room information
     # i.e if i go to a north room then my current room needs to know the previous
@@ -94,36 +94,73 @@ for direction in exits:
 
 random_direction = rooms_graph.get_random_direction(current_room.id)
 
+# since traversal path will contain the number of rooms i have visited - i can keep track of it
+# and know i have searched all the rooms when its length has reached the number of rooms there are
+while len(rooms_graph.rooms) < 501:        
 
-while random_direction is not None:
-    prev_room = current_room
-    # add the direction we are travelling into our traversal path
-    traversal_path.append(random_direction)
-    # travel in the random direction
-    player.travel(random_direction)
-    # re-assign the current room to the room we travelled to
-    current_room = player.current_room
-    # fill in previous room with the updated direction since i now have that
-    # rooms info
-    rooms_graph.rooms[prev_room.id][random_direction] = current_room.id
+    while random_direction is not None:
+        prev_room = current_room
+        # add the direction we are travelling into our traversal path
+        traversal_path.append(random_direction)
+        # travel in the random direction
+        player.travel(random_direction)
+        # re-assign the current room to the room we travelled to
+        current_room = player.current_room
+        # fill in previous room with the updated direction since i now have that
+        # rooms info
+        rooms_graph.rooms[prev_room.id][random_direction] = current_room.id
 
 
-    # add the new room to the graph
-    rooms_graph.add_room(current_room.id)
+        # add the new room to the graph
+        rooms_graph.add_room(current_room.id)
 
-    # get all of the current rooms exits and fill in the graph
-    exits = player.current_room.get_exits()
-    for direction in exits:
-        rooms_graph.add_exit(current_room.id, direction)
+        # get all of the current rooms exits and fill in the graph
+        exits = player.current_room.get_exits()
+        for direction in exits:
+            rooms_graph.add_exit(current_room.id, direction)
 
-    # i also need to update the current room with the prev room information
-    # get the opposite direction to fill in the prev room information for the current room
-    opposite_direction = rooms_graph.get_opposite_direction(random_direction)
-    rooms_graph.rooms[current_room.id][opposite_direction] = prev_room.id
+        # i also need to update the current room with the prev room information
+        # get the opposite direction to fill in the prev room information for the current room
+        opposite_direction = rooms_graph.get_opposite_direction(random_direction)
+        rooms_graph.rooms[current_room.id][opposite_direction] = prev_room.id
 
-    # update random direction to continue the loop until there are no explored rooms
-    random_direction = rooms_graph.get_random_direction(current_room.id)
+        # update random direction to continue the loop until there are no explored rooms
+        random_direction = rooms_graph.get_random_direction(current_room.id)
+    else:
+        # print("currentroom id: ", current_room.id)
+        # print(rooms_graph.rooms)
+        # BFS if we reach the end of a DFT - need to find the shortest path to the next ? room and then begin the DFT again
+        q = Queue()
+        
+        path = [(prev_room, opposite_direction)]
+        q.enqueue(path)
+        visited = set()
 
+        while q.size() > 0:
+            current_path = q.dequeue()
+            current_room = current_path[-1][0]
+            # print(current_path)
+            if current_room not in visited:
+                # i can use get_random_direction to check
+                # and see if the current room has an unexplored room or not
+                print("currentroom id: ", current_room.id)
+                random_direction = rooms_graph.get_random_direction(current_room.id)
+                # print("randomdir: ", random_direction)
+                if random_direction is not None:
+                    path = current_path
+                    break
+                
+                visited.add(current_room)
+                room_exit_directions = rooms_graph.get_room_exits(current_room.id)
+
+                for direction in room_exit_directions:
+                    next_room = current_room.get_room_in_direction(direction)
+                    next_path = current_path.copy()
+                    next_path.append((next_room, direction))
+                    q.enqueue(next_path)
+
+
+print("traversal path: ", traversal_path)
 
 
 
