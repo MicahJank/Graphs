@@ -13,10 +13,10 @@ world = World()
 
 # You may uncomment the smaller graphs for development and testing purposes.
 # map_file = "maps/test_line.txt"
-map_file = "maps/test_cross.txt"
+# map_file = "maps/test_cross.txt"
 # map_file = "maps/test_loop.txt"
 # map_file = "maps/test_loop_fork.txt"
-# map_file = "maps/main_maze.txt"
+map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
 room_graph=literal_eval(open(map_file, "r").read())
@@ -92,7 +92,7 @@ exits = player.current_room.get_exits()
 for direction in exits:
     rooms_graph.add_exit(current_room.id, direction)
 
-traversal_path.append("Room 0")
+# traversal_path.append("Room 0")
 
 # if random direction ever returns None its because the room we are in has had all its exits explored
 random_direction = rooms_graph.get_random_direction(current_room.id)
@@ -100,7 +100,7 @@ random_direction = rooms_graph.get_random_direction(current_room.id)
 print("current room: ", player.current_room.id)
 # since traversal path will contain the number of rooms i have visited - i can keep track of it
 # and know i have searched all the rooms when its length has reached the number of rooms there are
-while len(rooms_graph.rooms) < 9:        
+while len(rooms_graph.rooms) < 500:        
 
     while random_direction is not None:
         # print("looped")
@@ -137,7 +137,6 @@ while len(rooms_graph.rooms) < 9:
 
         # update random direction to continue the loop until there are no explored rooms
         random_direction = rooms_graph.get_random_direction(player.current_room.id)
-        print("current room: ", player.current_room.id)
     else:
         # print("currentroom id: ", current_room.id)
         # print(rooms_graph.rooms)
@@ -145,7 +144,7 @@ while len(rooms_graph.rooms) < 9:
         q = Queue()
         rooms_exits = rooms_graph.get_room_exits(player.current_room.id)
         for direction in rooms_exits:
-            path = [rooms_graph.rooms[player.current_room.id][direction]] # should give me the room of the exit
+            path = [(rooms_graph.rooms[player.current_room.id][direction], direction)] # should give me the room of the exit
             q.enqueue(path)
 
         # path = [(prev_room, opposite_direction)]
@@ -154,7 +153,7 @@ while len(rooms_graph.rooms) < 9:
 
         while q.size() > 0:
             current_path = q.dequeue()
-            current_room = current_path[-1]
+            current_room = current_path[-1][0] # last item in the path but first item in the tuple
             # print(current_path)
             if current_room not in visited:
                 # i can use get_random_direction to check
@@ -163,7 +162,11 @@ while len(rooms_graph.rooms) < 9:
                 random_direction = rooms_graph.get_random_direction(current_room.id)
                 # print("randomdir: ", random_direction)
                 if random_direction is not None:
+                    # print("player current room", player.current_room.id)
                     player.current_room = current_room
+                    for pair in current_path:
+                        # print("room id: ", pair[0].id, "room direction: ", pair[1])
+                        traversal_path.append(pair[1])
                     break
                 
                 visited.add(current_room)
@@ -172,7 +175,7 @@ while len(rooms_graph.rooms) < 9:
                 for direction in room_exit_directions:
                     next_room = current_room.get_room_in_direction(direction)
                     next_path = current_path.copy()
-                    next_path.append(next_room)
+                    next_path.append((next_room, direction))
                     q.enqueue(next_path)
 
 print("len of room graph: ", len(room_graph))
