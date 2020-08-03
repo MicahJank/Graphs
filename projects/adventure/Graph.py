@@ -37,19 +37,19 @@ class Graph:
     def get_random_direction(self, room_id):
         exits_list = list(self.rooms[room_id])
 
-        print("THE EXITS FOR THIS ROOM ARE: ", self.rooms[room_id])
+        # print("THE EXITS FOR THIS ROOM ARE: ", self.rooms[room_id])
         # should give back directions to rooms that havent been explored
         choices = [direction for direction in exits_list if self.rooms[room_id][direction] == "?"]
-        print("THE CURRENT PLAYER ROOM IS: ", room_id)
-        print("THE RANDOM CHOICES TO MOVE ARE: ", choices)
+        # print("THE CURRENT PLAYER ROOM IS: ", room_id)
+        # print("THE RANDOM CHOICES TO MOVE ARE: ", choices)
         # if the player tries to get a random direction in a room where there are no
         # unexplored paths - then i should return None
         if len(choices) > 0:
             # choose a random direction from the list
             random_direction = random.choice(choices)
-            print("the random direction to move in is: ", random_direction)
+            # print("the random direction to move in is: ", random_direction)
             # print("random direction: ", random_direction)
             return random_direction
         else:
-            print("there are no directions to move in OOOH NOOOOO!")
+            # print("there are no directions to move in OOOH NOOOOO!")
             return None

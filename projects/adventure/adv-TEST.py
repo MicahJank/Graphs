@@ -16,8 +16,8 @@ world = World()
 # map_file = "maps/test_line.txt"
 # map_file = "maps/test_cross.txt"
 # map_file = "maps/test_loop.txt"
-map_file = "maps/test_loop_fork.txt"
-# map_file = "maps/main_maze.txt"
+# map_file = "maps/test_loop_fork.txt"
+map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
 room_graph=literal_eval(open(map_file, "r").read())
@@ -49,9 +49,9 @@ random_direction = rooms_graph.get_random_direction(player.current_room.id)
 # print("current room: ", player.current_room.id)
 # since traversal path will contain the number of rooms i have visited - i can keep track of it
 # and know i have searched all the rooms when its length has reached the number of rooms there are
-while len(rooms_graph.rooms) != 18:        
+while len(rooms_graph.rooms) != 500:        
     while random_direction is not None:
-        print("###############################################       DFS       #############################################")
+        # print("###############################################       DFS       #############################################")
         # print("adding traversal from DFT", (random_direction, player.current_room.id))
         # add the direction we are travelling into our traversal path
 
@@ -80,22 +80,25 @@ while len(rooms_graph.rooms) != 18:
         # update random direction to continue the loop until there are no explored rooms
         random_direction = rooms_graph.get_random_direction(player.current_room.id)
     else:
-        print("ROOMS GRAPH ROOMS: ", rooms_graph.rooms)
-        if len(rooms_graph.rooms) == 18:
+        # print("ROOMS GRAPH ROOMS: ", rooms_graph.rooms)
+        if len(rooms_graph.rooms) == 500:
             break
-        print("TRAVERSAL PATH: ", traversal_path)
+        # print("TRAVERSAL PATH: ", traversal_path)
         # BFS if we reach the end of a DFT - need to find the shortest path to the next ? room and then begin the DFT again
         visited = set()
         q = Queue()
+        next_room = player.current_room
         rooms_exits = rooms_graph.get_room_exits(player.current_room.id)
+        visited.add(player.current_room)
         for direction in rooms_exits:
-            path = [(player.current_room, direction)] # should give me the room of the exit
+            next_room = player.current_room.get_room_in_direction(direction)
+            path = [(next_room, direction)] # should give me the room of the exit
             q.enqueue(path)
 
         while q.size() > 0:
-            print("###############################################      BFS       #############################################")
+            # print("###############################################      BFS       #############################################")
             current_path = q.dequeue()
-            print("CURRENT PATH: ", current_path)
+            # print("CURRENT PATH: ", current_path)
             current_room = current_path[-1][0] # last item in the path but first item in the tuple
             # print("current room at top of loop: ", current_room)
             if current_room not in visited:
@@ -124,8 +127,9 @@ while len(rooms_graph.rooms) != 18:
                         # player.travel(direction)
                         # print("player current room after moving: ", player.current_room.id)
                         next_path = current_path.copy()
-                        print("NEXT ROOM TO ADD TO PATH: ", next_room.id)
-                        next_path.append((current_room, direction))
+                        # print("NEXT ROOM TO ADD TO PATH: ", next_room.id)
+
+                        next_path.append((current_room.get_room_in_direction(direction), direction))
                         # traversal_path.append((direction, current_room.id, "FROM BFT"))
                         # print('enqueuing to path: ', next_path)
                         q.enqueue(next_path)
@@ -133,7 +137,7 @@ while len(rooms_graph.rooms) != 18:
                 else:
                 # we have found an unexplored room and we should search it
                     player.current_room = current_room
-                    print("ADDING THESE PATHS TO TRAVERSAL: ", current_path)
+                    # print("ADDING THESE PATHS TO TRAVERSAL: ", current_path)
                     for path in current_path:
                         traversal_path.append((path[1], path[0].id, "FROM BFT"))
                     # player.current_room = current_room
@@ -167,7 +171,8 @@ print("traversal path: ", traversal_path)
 visited_rooms = set()
 player.current_room = world.starting_room
 visited_rooms.add(player.current_room)
-
+print("TRAVERSAL LENGTH: ", len(traversal_path))
+print("TRAVERSAL: ", traversal_path)
 for move in traversal_path:
     player.travel(move[0])
     visited_rooms.add(player.current_room)
