@@ -1,0 +1,39 @@
+Given two words (begin_word and end_word), and a dictionarys word list,
+return the shortest transformation sequence from begin_word to end_word such that:
+
+Only 1 letter can be changed at a time.
+Each transformed word must exist in the word list. Note that begin word is not a transformed word.
+
+begin_word = "hit"
+end_word = "cog"
+
+return: ["hit", "hot", "cot", "cog"]
+
+
+1. What are the nodes?
+   - the words in the word list
+
+2. What are the edges? - What is it that connects two nodes to eachother?
+   - two words are connected when there is only 1 letter difference between them
+
+
+
+PSEUDO IT UP
+
+- some type of function that takes in the start word and end word and the list of words to check
+ def shortest_seq(start_word, end_word, dictionary_list):
+    do something here
+
+ IF BUILDING MY GRAPH
+- would need to take the dictionary list and add all the words as adjacency list vertices
+- would also need to connect the words with edges
+
+ IF JUST CREATING A GET NEIGHBORS FUNCTION
+- create a get_neighbors function
+  def get_neighbors(word, dictionary_list):
+    i would have to find the word and then get both the word before and after it in the list to get its neighbors
+
+    probably to make this function faster would be a good idea to create an actual dictionary object that stores each
+    word and all of its neighbors as a value
+
+- probably makes sense to use a BFS since that always returns the shortest path to something

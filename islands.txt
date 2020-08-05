@@ -1,0 +1,30 @@
+Write a function that takes a 2D binary array and returns the number of 1 islands. 
+An island consists of 1s that are connected to the north, south, east or west. For example:
+islands = [[0, 1, 0, 1, 0],
+           [1, 1, 0, 1, 1],
+           [0, 0, 1, 0, 0],
+           [1, 0, 1, 0, 0],
+           [1, 1, 0, 0, 0]]
+
+islands[0][1]
+islands[1][1]
+
+
+
+1. Describe in graphs terminology
+- What are our nodes? 1s
+- When do we have an edge to another node? if one step away, to NSEW
+
+
+What do we call a group of 1s/nodes? Connected components
+
+
+2. Build your graph or define getNeighbors()
+ - you could get the nieghbors of nodes by taking the nodes position in the matrix and then checking the corresponding NSEW positions relative to that node
+ so at position islands[0][1] - you would want to check EAST: islands[0][1 + 1], WEST: islands[0][1 - 1], SOUTH: islands[0 + 1][1], NORTH: islands[0 - 1][1]
+ you would also need to make sure that if there are no rows or columns to the NSWE sides then you dont check them since they dont even exist
+ - if you find a node at any of those locations you would add it to a list and return it
+
+
+3. Choose your algorithm
+  I think a DFT would be best since we want to find the most connected nodes we can quickly
